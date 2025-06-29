@@ -1,28 +1,48 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Card from './Card'
+import { useDocs } from '../context/DocsContext';
+import Form from './Form';
 
 const Foreground = () => {
 
   const containerRef = useRef(null);
+  const [showForm, setShowForm] = useState(false)
 
-  const data = [
-    { isDownload: true, progress: 0, bgcolor: '#10b981', dataAmount:'0.98 Mb', data:'making a project LOL!' }, 
-    { isDownload: false, progress: 50, bgcolor: '#ef4444', dataAmount:'0.10 Mb', data:'making a project LOL!' }, 
-    { isDownload: true, progress: 75, bgcolor: '#8b5cf6', dataAmount:'10.5 Mb', data:'making a project LOL!' },
-    { isDownload: false, progress: 35, bgcolor: '#71717a', dataAmount:'0.34 Mb', data:'making a project LOL!' }, 
-  ];
+  const {docs, addDocs} = useDocs();
+
+  const handleCloseForm = () => {
+    setShowForm(false)
+  }
+
+  const handleToggleForm = () => {
+    setShowForm(!showForm)
+  }
 
   return (
     <>
       <div ref={containerRef} className='fixed z-[3] w-full h-full top-0 left-0 flex gap-5 p-6 flex-wrap'>
         {
-          data.map((item,idx)=>{
-            console.log(item)
+          docs.map((item,idx)=>{
             return(
               <Card things={item} key={idx} reference={containerRef} />
             )
           })
         }
+        
+        {/* Add Button */}
+        <div 
+          onClick={handleToggleForm} 
+          style={{
+            rotate: showForm ? '-45deg' : '0deg', 
+            transition: 'all ease 0.5s'
+          }} 
+          className='h-15 w-15 fixed bg-zinc-900 rounded-full top-3 right-3 flex items-center justify-center cursor-pointer hover:bg-zinc-800 transition-colors'
+        >
+          <h1 className='text-white text-7xl font-[100]'>+</h1>
+        </div>
+
+        {/* Form Modal */}
+        {showForm && <Form onClose={handleCloseForm} />}
       </div>
     </>
   )
